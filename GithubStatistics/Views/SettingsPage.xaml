@@ -6,9 +6,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Width="800">
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MinWidth="700"/>
+            <ColumnDefinition Width="Auto"/>
+
+        </Grid.ColumnDefinitions>
+        <TextBox HorizontalAlignment="Left" Margin="50,136,0,0" Text="Acces Token" VerticalAlignment="Top" MinWidth="600" Width="Auto" Grid.ColumnSpan="2"/>
+        <Button Content="Save" HorizontalAlignment="Left" Margin="10.6,136,0,0" VerticalAlignment="Top" Click="Button_Click" RenderTransformOrigin="0.394,0.264" Height="32" Width="59" Grid.Column="1"/>
 
     </Grid>
 </Page>

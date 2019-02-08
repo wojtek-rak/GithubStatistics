@@ -16,8 +16,8 @@
                         IsTabStop="False"
                         Header="Let's go shopping!">
             <NavigationView.MenuItems>
-                <NavigationViewItem Icon="Setting" Content="Repository" Tag="SettingsPage" />
-                <NavigationViewItem Icon="Home" Content="Home" Tag="Home_Page" />
+                <NavigationViewItem Icon="Setting" Content="Settings" Tag="SettingsPage" />
+                <NavigationViewItem Icon="Home" Content="User" Tag="UserPage" />
             </NavigationView.MenuItems>
             <Frame x:Name="contentFrame"></Frame>
         </NavigationView>

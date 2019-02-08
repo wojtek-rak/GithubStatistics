@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using GithubStatistics.Views;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -29,7 +30,15 @@ namespace GithubStatistics
 
         private void nvTopLevelNav_Loaded(object sender, RoutedEventArgs e)
         {
-            //throw new NotImplementedException();
+            foreach (NavigationViewItemBase item in nvTopLevelNav.MenuItems)
+            {
+                if (item is NavigationViewItem && item.Tag.ToString() == "UserPage")
+                {
+                    nvTopLevelNav.SelectedItem = item;
+                    break;
+                }
+            }
+            contentFrame.Navigate(typeof(SettingsPage));
         }
 
         private void nvTopLevelNav_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -39,7 +48,18 @@ namespace GithubStatistics
 
         private void nvTopLevelNav_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
-            //throw new NotImplementedException();
+            var itemContent = args.InvokedItem;
+            if (itemContent == null) return;
+            switch (itemContent) 
+            {
+                case "User":
+                    contentFrame.Navigate(typeof(UserPage));
+                    break;
+
+                case "Settings":
+                    contentFrame.Navigate(typeof(SettingsPage));
+                    break;
+            }
         }
     }
 }
