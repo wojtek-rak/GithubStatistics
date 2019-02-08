@@ -38,7 +38,7 @@ namespace GithubStatistics
                     break;
                 }
             }
-            contentFrame.Navigate(typeof(SettingsPage));
+            contentFrame.Navigate(typeof(UserPage));
         }
 
         private void nvTopLevelNav_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)

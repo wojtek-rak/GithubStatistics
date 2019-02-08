@@ -9,6 +9,9 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-
+        <AutoSuggestBox PlaceholderText="Search" QueryIcon="Find" Width="200"
+                        TextChanged="AutoSuggestBox_TextChanged"
+                        QuerySubmitted="AutoSuggestBox_QuerySubmitted"
+                        SuggestionChosen="AutoSuggestBox_SuggestionChosen" HorizontalAlignment="Stretch" Margin="610,80,690,0" VerticalAlignment="Top"/>
     </Grid>
 </Page>
