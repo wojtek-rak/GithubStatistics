@@ -14,7 +14,7 @@
             <ColumnDefinition Width="Auto"/>
 
         </Grid.ColumnDefinitions>
-        <TextBox HorizontalAlignment="Left" Margin="50,136,0,0" Text="Acces Token" VerticalAlignment="Top" MinWidth="600" Width="Auto" Grid.ColumnSpan="2"/>
+        <TextBox Name="Token" HorizontalAlignment="Left" Margin="50,136,0,0" Text="Acces Token" VerticalAlignment="Top" MinWidth="600" Width="Auto" Grid.ColumnSpan="2"/>
         <Button Content="Save" HorizontalAlignment="Left" Margin="10.6,136,0,0" VerticalAlignment="Top" Click="Button_Click" RenderTransformOrigin="0.394,0.264" Height="32" Width="59" Grid.Column="1"/>
 
     </Grid>
