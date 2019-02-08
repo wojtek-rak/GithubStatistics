@@ -26,5 +26,20 @@ namespace GithubStatistics
         {
             this.InitializeComponent();
         }
+
+        private void nvTopLevelNav_Loaded(object sender, RoutedEventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
+        private void nvTopLevelNav_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        {
+            //throw new NotImplementedException();
+        }
+
+        private void nvTopLevelNav_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+        {
+            //throw new NotImplementedException();
+        }
     }
 }

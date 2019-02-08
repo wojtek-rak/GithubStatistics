@@ -7,8 +7,19 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
     <Grid>
-
+        <NavigationView x:Name="nvTopLevelNav"
+                        Loaded="nvTopLevelNav_Loaded"
+                        Margin="0,12,0,0"
+                        SelectionChanged="nvTopLevelNav_SelectionChanged"
+                        ItemInvoked="nvTopLevelNav_ItemInvoked"
+                        IsTabStop="False"
+                        Header="Let's go shopping!">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Icon="Setting" Content="Repository" Tag="SettingsPage" />
+                <NavigationViewItem Icon="Home" Content="Home" Tag="Home_Page" />
+            </NavigationView.MenuItems>
+            <Frame x:Name="contentFrame"></Frame>
+        </NavigationView>
     </Grid>
 </Page>
