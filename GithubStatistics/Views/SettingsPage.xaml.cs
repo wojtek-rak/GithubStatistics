@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -14,6 +15,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using GithubStatistics.Common;
+using GithubStatistics.Services;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -38,12 +40,14 @@ namespace GithubStatistics.Views
             if (value != null)
             {
                 Token.Text = value.ToString();
+                GithubService.client.DefaultRequestHeaders.Authorization  = new AuthenticationHeaderValue("Bearer", value.ToString());
             }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             _applicationDataContainer.Values[Com.AccesToken] = Token.Text;
+            GithubService.client.DefaultRequestHeaders.Authorization  = new AuthenticationHeaderValue("Bearer", Token.Text);
         }
     }
 }
