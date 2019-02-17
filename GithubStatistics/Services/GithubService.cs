@@ -46,11 +46,5 @@ namespace GithubStatistics.Services
                 throw e;
             }
         }
-
-        public int Test()
-        {
-            return 1;
-        }
-
     }
 }

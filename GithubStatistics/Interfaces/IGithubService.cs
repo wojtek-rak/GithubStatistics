@@ -9,7 +9,6 @@ namespace GithubStatistics.Interfaces
 {
     public interface IGithubService
     {
-        int Test();
         HttpResponseMessage SearchUser(string name);
         HttpResponseMessage GetUserDetails(string name);
 

@@ -17,6 +17,15 @@
         <TextBlock Name="JsonTextHeader" HorizontalAlignment="Left" Margin="594,176,0,0" Text="TextBlock" TextWrapping="Wrap" VerticalAlignment="Top" Height="228" Width="404"/>
         <TextBlock Name="JsonTextBody" HorizontalAlignment="Left" Margin="594,428,0,0" Text="TextBlock" TextWrapping="Wrap" VerticalAlignment="Top" Height="228" Width="404"/>
         <TextBlock HorizontalAlignment="Left" Margin="40,12,0,0" Text="User:" TextWrapping="Wrap" VerticalAlignment="Top" />
+        <TextBlock HorizontalAlignment="Left" Margin="296,12,0,0" Text="Search Limit" TextWrapping="Wrap" VerticalAlignment="Top" />
+        <Border Name="SearchLimitBoard" Background="White"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="296,40,0,0" Width="81" MinWidth="80" Height="22" >
+            <TextBlock Name="SearchLimit"  HorizontalAlignment="Left" Margin="0,0,0,0" Text="0/0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" Height="22" TextAlignment="Center" />
+        </Border>
+        <TextBlock HorizontalAlignment="Left" Margin="463,12,0,0" Text="Normal Limit" TextWrapping="Wrap" VerticalAlignment="Top" />
+        <Border Name="NormalLimitBoard" Background="White"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="463,40,0,0" MinWidth="80" Width="85" >
+            <TextBlock Name="NormalLimit" HorizontalAlignment="Left" Margin="0,0,0,0" Text="0/0" TextWrapping="Wrap" VerticalAlignment="Top" Width="83" Height="22" TextAlignment="Center" />
+        </Border>
+
 
     </Grid>
 </Page>

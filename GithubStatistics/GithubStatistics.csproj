@@ -96,6 +96,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\Com.cs" />
+    <Compile Include="Common\Enums\LimitColor.cs" />
     <Compile Include="Interfaces\IGithubService.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

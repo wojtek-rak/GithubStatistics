@@ -8,6 +8,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -15,6 +16,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using GithubStatistics.Common.Enums;
 using GithubStatistics.Interfaces;
 using GithubStatistics.Models;
 using GithubStatistics.Services;
@@ -88,6 +90,13 @@ namespace GithubStatistics.Views
             var response = Task.Run(() =>_githubService.SearchUser(name)).Result;
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
+            var maxLimit = response.Headers.GetValues("X-RateLimit-Limit").FirstOrDefault();
+            var remaining = response.Headers.GetValues("X-RateLimit-Remaining").FirstOrDefault();
+            if (maxLimit != null && remaining != null)
+            {
+                SearchLimit.Text = $"{remaining}/{maxLimit}";
+                SearchLimitBoard.Background = new SolidColorBrush(LimitColor.GetColorByIndex(CalculateColorIndex(remaining, maxLimit)));
+            }
             JsonTextHeader.Text = response.ToString();
             JsonTextBody.Text = responseBody;
 
@@ -99,10 +108,24 @@ namespace GithubStatistics.Views
             var response = Task.Run(() =>_githubService.GetUserDetails(name)).Result;
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
+            var maxLimit = response.Headers.GetValues("X-RateLimit-Limit").FirstOrDefault();
+            var remaining = response.Headers.GetValues("X-RateLimit-Remaining").FirstOrDefault();
+            if (maxLimit != null && remaining != null)
+            {
+                NormalLimit.Text = $"{remaining}/{maxLimit}";
+                NormalLimitBoard.Background = new SolidColorBrush(LimitColor.GetColorByIndex(CalculateColorIndex(remaining, maxLimit)));
+            }
             JsonTextHeader.Text = response.ToString();
             JsonTextBody.Text = responseBody;
 
             return JsonConvert.DeserializeObject<UserDetailsResult>(responseBody);
+        }
+
+        private int CalculateColorIndex(string remaining, string maxLimit)
+        {
+            var maxLimitValue = Int32.Parse(maxLimit);
+            var remainingValue = Int32.Parse(remaining);
+            return (int)(((float)remainingValue / maxLimitValue)*5);
         }
     }
 }
