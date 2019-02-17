@@ -50,9 +50,18 @@ namespace GithubStatistics.Views
             {
                 var name = sender.Text;
                 if (name == string.Empty) return;
-                var response = await SendSearchRequest(name);
-                searchResultRoot = response;
-                suggestions = new ObservableCollection<string>(response.items.Select(x => x.login));
+
+                var response = await Task.Run(() => SendSearchRequest(name));
+
+                if (response.max != null && response.remaining != null)
+                {
+                    SearchLimit.Text = $"{response.remaining}/{response.max}";
+                    SearchLimitBoard.Background = new SolidColorBrush(LimitColor.GetColorByIndex(CalculateColorIndex(response.remaining, response.max)));
+                }
+                //var response = await SendSearchRequest(name);
+
+                searchResultRoot = response.root;
+                suggestions = new ObservableCollection<string>(response.root.items.Select(x => x.login));
                 sender.ItemsSource = suggestions;  
                 //Set the ItemsSource to be your filtered dataset
                 //sender.ItemsSource = dataset;
@@ -71,8 +80,15 @@ namespace GithubStatistics.Views
             if (args.ChosenSuggestion != null)
             {
                 //var choosedUser = searchResultRoot.items.First(x => x.login == args.ChosenSuggestion.ToString());
-                var response = await SendGetUserDetailsRequest(args.ChosenSuggestion.ToString());
-                userDetailsResult = response;
+                var name = args.ChosenSuggestion.ToString();
+                var response = await Task.Run(() => SendGetUserDetailsRequest(name));
+
+                if (response.max != null && response.remaining != null)
+                {
+                    NormalLimit.Text = $"{response.remaining}/{response.max}";
+                    NormalLimitBoard.Background = new SolidColorBrush(LimitColor.GetColorByIndex(CalculateColorIndex(response.remaining, response.max)));
+                }
+                userDetailsResult = response.result;
             }
             else
             {
@@ -85,40 +101,26 @@ namespace GithubStatistics.Views
             var response = SendSearchRequest("AAB");
         }
 
-        private async Task<SearchResultRoot> SendSearchRequest(string name)
+        private async Task<(SearchResultRoot root, string max, string remaining)> SendSearchRequest(string name)
         {
-            var response = Task.Run(() =>_githubService.SearchUser(name)).Result;
+            var response = _githubService.SearchUser(name);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
             var maxLimit = response.Headers.GetValues("X-RateLimit-Limit").FirstOrDefault();
             var remaining = response.Headers.GetValues("X-RateLimit-Remaining").FirstOrDefault();
-            if (maxLimit != null && remaining != null)
-            {
-                SearchLimit.Text = $"{remaining}/{maxLimit}";
-                SearchLimitBoard.Background = new SolidColorBrush(LimitColor.GetColorByIndex(CalculateColorIndex(remaining, maxLimit)));
-            }
-            JsonTextHeader.Text = response.ToString();
-            JsonTextBody.Text = responseBody;
 
-            return JsonConvert.DeserializeObject<SearchResultRoot>(responseBody);
+            return (JsonConvert.DeserializeObject<SearchResultRoot>(responseBody), maxLimit, remaining);
         }
 
-        private async Task<UserDetailsResult> SendGetUserDetailsRequest(string name)
+        private async Task<(UserDetailsResult result, string max, string remaining)> SendGetUserDetailsRequest(string name)
         {
-            var response = Task.Run(() =>_githubService.GetUserDetails(name)).Result;
+            var response = _githubService.GetUserDetails(name);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
             var maxLimit = response.Headers.GetValues("X-RateLimit-Limit").FirstOrDefault();
             var remaining = response.Headers.GetValues("X-RateLimit-Remaining").FirstOrDefault();
-            if (maxLimit != null && remaining != null)
-            {
-                NormalLimit.Text = $"{remaining}/{maxLimit}";
-                NormalLimitBoard.Background = new SolidColorBrush(LimitColor.GetColorByIndex(CalculateColorIndex(remaining, maxLimit)));
-            }
-            JsonTextHeader.Text = response.ToString();
-            JsonTextBody.Text = responseBody;
 
-            return JsonConvert.DeserializeObject<UserDetailsResult>(responseBody);
+            return (JsonConvert.DeserializeObject<UserDetailsResult>(responseBody), maxLimit, remaining);
         }
 
         private int CalculateColorIndex(string remaining, string maxLimit)
