@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -16,6 +18,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using GithubStatistics.Annotations;
 using GithubStatistics.Common.Enums;
 using GithubStatistics.Interfaces;
 using GithubStatistics.Models;
@@ -29,11 +32,23 @@ namespace GithubStatistics.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class UserPage : Page
+    public sealed partial class UserPage : Page, INotifyPropertyChanged
     {
         private SearchResultRoot searchResultRoot;
-        private UserDetailsResult userDetailsResult;
-        private ObservableCollection < String > suggestions;  
+        private ObservableCollection <String> suggestions; 
+
+        private UserDetailsResult _userDetailsResult;
+
+        public UserDetailsResult UserDetailsResult
+        {
+            get => _userDetailsResult;
+            set
+            {
+                _userDetailsResult = value;
+                OnPropertyChanged(nameof(UserDetailsResult));
+            }
+        }
+
         private readonly IGithubService _githubService = new GithubService();
         public UserPage()
         {
@@ -50,21 +65,35 @@ namespace GithubStatistics.Views
             {
                 var name = sender.Text;
                 if (name == string.Empty) return;
-
-                var response = await Task.Run(() => SendSearchRequest(name));
-
-                if (response.max != null && response.remaining != null)
+                try
                 {
-                    SearchLimit.Text = $"{response.remaining}/{response.max}";
-                    SearchLimitBoard.Background = new SolidColorBrush(LimitColor.GetColorByIndex(CalculateColorIndex(response.remaining, response.max)));
-                }
-                //var response = await SendSearchRequest(name);
+                    var response = await Task.Run(() => SendSearchRequest(name));
 
-                searchResultRoot = response.root;
-                suggestions = new ObservableCollection<string>(response.root.items.Select(x => x.login));
-                sender.ItemsSource = suggestions;  
-                //Set the ItemsSource to be your filtered dataset
-                //sender.ItemsSource = dataset;
+                    if (response.max != null && response.remaining != null)
+                    {
+                        SearchLimit.Text = $"{response.remaining}/{response.max}";
+                        SearchLimitBoard.Background = new SolidColorBrush(
+                            LimitColor.GetColorByIndex(CalculateColorIndex(response.remaining, response.max)));
+                    }
+                    //var response = await SendSearchRequest(name);
+
+                    searchResultRoot = response.root;
+                    suggestions = new ObservableCollection<string>(response.root.items.Select(x => x.login));
+                    sender.ItemsSource = suggestions;
+                    //Set the ItemsSource to be your filtered dataset
+                    //sender.ItemsSource = dataset;
+                }
+                catch (HttpRequestException ex)
+                {
+                    SearchLimit.Text = $"Wait!";
+                    SearchLimitBoard.Background = new SolidColorBrush(
+                        LimitColor.GetColorByIndex(CalculateColorIndex("0", "10")));
+                }
+                catch(Exception ex)
+                {
+                    throw ex;
+                }
+                
             }
         }
 
@@ -88,7 +117,7 @@ namespace GithubStatistics.Views
                     NormalLimit.Text = $"{response.remaining}/{response.max}";
                     NormalLimitBoard.Background = new SolidColorBrush(LimitColor.GetColorByIndex(CalculateColorIndex(response.remaining, response.max)));
                 }
-                userDetailsResult = response.result;
+                UserDetailsResult = response.result;
             }
             else
             {
@@ -98,7 +127,11 @@ namespace GithubStatistics.Views
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            var response = SendSearchRequest("AAB");
+            var response = SendGetUserDetailsRequest("wojtek-rak");
+            JsonTextBody.Text = response.Result.ToString();
+            UserDetailsResult = response.Result.result;
+
+
         }
 
         private async Task<(SearchResultRoot root, string max, string remaining)> SendSearchRequest(string name)
@@ -119,8 +152,8 @@ namespace GithubStatistics.Views
             string responseBody = await response.Content.ReadAsStringAsync();
             var maxLimit = response.Headers.GetValues("X-RateLimit-Limit").FirstOrDefault();
             var remaining = response.Headers.GetValues("X-RateLimit-Remaining").FirstOrDefault();
-
-            return (JsonConvert.DeserializeObject<UserDetailsResult>(responseBody), maxLimit, remaining);
+            var result = JsonConvert.DeserializeObject<UserDetailsResult>(responseBody);
+            return (result, maxLimit, remaining);
         }
 
         private int CalculateColorIndex(string remaining, string maxLimit)
@@ -128,6 +161,15 @@ namespace GithubStatistics.Views
             var maxLimitValue = Int32.Parse(maxLimit);
             var remainingValue = Int32.Parse(remaining);
             return (int)(((float)remainingValue / maxLimitValue)*5);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

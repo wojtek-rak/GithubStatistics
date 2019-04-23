@@ -13,14 +13,15 @@ namespace GithubStatistics.Tests
         {
             var githubService = new GithubService();
             var users = githubService.SearchUser("aaab");
-            Assert.AreEqual(githubService.Test(), 1);
+            Assert.AreEqual(githubService.SearchUser("aaab"), 1);
         }
 
         [TestMethod]
-        public void TestMethod1()
+        public void GeUser_ValidUsername_GetUsers()
         {
             var githubService = new GithubService();
-            Assert.AreEqual(githubService.Test(), 1);
+            var users = githubService.SearchUser("aaab");
+            Assert.AreEqual(githubService.GetUserDetails("aaab"), 1);
         }
     }
 }

@@ -27,5 +27,35 @@
         </Border>
 
 
+        <GridView ItemsSource="{x:Bind UserDetailsResult, Mode=OneWay }"
+                      IsItemClickEnabled="True"
+                      IsSwipeEnabled="true"
+                      SelectionMode="Single" Margin="40,128,967,552">
+
+            <GridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapGrid Orientation="Vertical"/>
+                </ItemsPanelTemplate>
+            </GridView.ItemsPanel>
+
+            <GridView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="{Binding login}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding bio}"/>
+                        <TextBlock Grid.Column="2" Text="{Binding email}"/>
+                        <TextBlock Grid.Column="3" Text="{Binding company}"/>
+                    </Grid>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
+
     </Grid>
 </Page>

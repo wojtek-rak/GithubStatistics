@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,7 +31,7 @@ namespace GithubStatistics.Models
         public string company { get; set; }
         public string blog { get; set; }
         public string location { get; set; }
-        public string email { get; set; }
+        public object email { get; set; }
         public object hireable { get; set; }
         public string bio { get; set; }
         public int public_repos { get; set; }
